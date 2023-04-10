@@ -1,0 +1,905 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "admin", "type": "address" },
+          { "internalType": "uint32", "name": "maxClaims", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "timeForReclaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "timeForChallenge",
+            "type": "uint32"
+          },
+          { "internalType": "address", "name": "ubiBurner", "type": "address" },
+          { "internalType": "uint32", "name": "adminFee", "type": "uint32" },
+          { "internalType": "uint32", "name": "ubiFee", "type": "uint32" },
+          { "internalType": "uint32", "name": "maxExtraFee", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "minTimeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "maxTimeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "minTimeForClaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "maxTimeForClaim",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct Yubiai.YubiaiSettings",
+        "name": "_settings",
+        "type": "tuple"
+      },
+      { "internalType": "address", "name": "_governor", "type": "address" },
+      {
+        "internalType": "contract IArbitrator",
+        "name": "_arbitrator",
+        "type": "address"
+      },
+      { "internalType": "bytes", "name": "_extraData", "type": "bytes" },
+      { "internalType": "string", "name": "_metaEvidence", "type": "string" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "claimId",
+        "type": "uint64"
+      },
+      {
+        "indexed": true,
+        "internalType": "enum Yubiai.ClaimResult",
+        "name": "result",
+        "type": "uint8"
+      }
+    ],
+    "name": "ClaimClosed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "dealId",
+        "type": "uint64"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "claimId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      }
+    ],
+    "name": "ClaimCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_localDisputeID",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_round",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "ruling",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_contributor",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Contribution",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "dealId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "payment",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "refund",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "ubiFee",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "adminFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "DealClosed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "dealId",
+        "type": "uint64"
+      },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "address", "name": "buyer", "type": "address" },
+          {
+            "internalType": "enum Yubiai.DealState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint32",
+            "name": "extraBurnFee",
+            "type": "uint32"
+          },
+          { "internalType": "uint32", "name": "claimCount", "type": "uint32" },
+          { "internalType": "uint24", "name": "freeSpace", "type": "uint24" },
+          { "internalType": "address", "name": "seller", "type": "address" },
+          { "internalType": "uint32", "name": "createdAt", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "timeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "timeForClaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "currentClaim",
+            "type": "uint64"
+          },
+          { "internalType": "uint32", "name": "freeSpace2", "type": "uint32" }
+        ],
+        "indexed": false,
+        "internalType": "struct Yubiai.Deal",
+        "name": "deal",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "terms",
+        "type": "string"
+      }
+    ],
+    "name": "DealCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IArbitrator",
+        "name": "_arbitrator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_metaEvidenceID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_evidenceGroupID",
+        "type": "uint256"
+      }
+    ],
+    "name": "Dispute",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IArbitrator",
+        "name": "_arbitrator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_evidenceGroupID",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_party",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_evidence",
+        "type": "string"
+      }
+    ],
+    "name": "Evidence",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_metaEvidenceID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_evidence",
+        "type": "string"
+      }
+    ],
+    "name": "MetaEvidence",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IArbitrator",
+        "name": "_arbitrator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_ruling",
+        "type": "uint256"
+      }
+    ],
+    "name": "Ruling",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_localDisputeID",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_round",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_ruling",
+        "type": "uint256"
+      }
+    ],
+    "name": "RulingFunded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_localDisputeID",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_round",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_ruling",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_contributor",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_reward",
+        "type": "uint256"
+      }
+    ],
+    "name": "Withdrawal",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "VERSION",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "_claimId", "type": "uint64" }
+    ],
+    "name": "acceptClaim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "arbitrator",
+    "outputs": [
+      { "internalType": "contract IArbitrator", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "_claimId", "type": "uint64" }
+    ],
+    "name": "challengeClaim",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_governor", "type": "address" }
+    ],
+    "name": "changeGovernor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "admin", "type": "address" },
+          { "internalType": "uint32", "name": "maxClaims", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "timeForReclaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "timeForChallenge",
+            "type": "uint32"
+          },
+          { "internalType": "address", "name": "ubiBurner", "type": "address" },
+          { "internalType": "uint32", "name": "adminFee", "type": "uint32" },
+          { "internalType": "uint32", "name": "ubiFee", "type": "uint32" },
+          { "internalType": "uint32", "name": "maxExtraFee", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "minTimeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "maxTimeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "minTimeForClaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "maxTimeForClaim",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct Yubiai.YubiaiSettings",
+        "name": "_settings",
+        "type": "tuple"
+      }
+    ],
+    "name": "changeSettings",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+    "name": "claims",
+    "outputs": [
+      { "internalType": "uint256", "name": "disputeId", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "uint256", "name": "arbFees", "type": "uint256" },
+      { "internalType": "uint64", "name": "dealId", "type": "uint64" },
+      { "internalType": "uint32", "name": "createdAt", "type": "uint32" },
+      { "internalType": "uint32", "name": "solvedAt", "type": "uint32" },
+      { "internalType": "uint8", "name": "ruling", "type": "uint8" },
+      { "internalType": "uint64", "name": "arbSettingsId", "type": "uint64" },
+      { "internalType": "uint56", "name": "freeSpace", "type": "uint56" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "_dealId", "type": "uint64" }
+    ],
+    "name": "closeDeal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "counters",
+    "outputs": [
+      { "internalType": "uint64", "name": "dealCount", "type": "uint64" },
+      { "internalType": "uint64", "name": "claimCount", "type": "uint64" },
+      {
+        "internalType": "uint64",
+        "name": "currentArbSettingId",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "address", "name": "buyer", "type": "address" },
+          {
+            "internalType": "enum Yubiai.DealState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint32",
+            "name": "extraBurnFee",
+            "type": "uint32"
+          },
+          { "internalType": "uint32", "name": "claimCount", "type": "uint32" },
+          { "internalType": "uint24", "name": "freeSpace", "type": "uint24" },
+          { "internalType": "address", "name": "seller", "type": "address" },
+          { "internalType": "uint32", "name": "createdAt", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "timeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "timeForClaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "currentClaim",
+            "type": "uint64"
+          },
+          { "internalType": "uint32", "name": "freeSpace2", "type": "uint32" }
+        ],
+        "internalType": "struct Yubiai.Deal",
+        "name": "_deal",
+        "type": "tuple"
+      },
+      { "internalType": "string", "name": "_terms", "type": "string" }
+    ],
+    "name": "createDeal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "address", "name": "buyer", "type": "address" },
+          {
+            "internalType": "enum Yubiai.DealState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint32",
+            "name": "extraBurnFee",
+            "type": "uint32"
+          },
+          { "internalType": "uint32", "name": "claimCount", "type": "uint32" },
+          { "internalType": "uint24", "name": "freeSpace", "type": "uint24" },
+          { "internalType": "address", "name": "seller", "type": "address" },
+          { "internalType": "uint32", "name": "createdAt", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "timeForService",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "timeForClaim",
+            "type": "uint32"
+          },
+          {
+            "internalType": "contract IERC20",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "currentClaim",
+            "type": "uint64"
+          },
+          { "internalType": "uint32", "name": "freeSpace2", "type": "uint32" }
+        ],
+        "internalType": "struct Yubiai.Deal",
+        "name": "_deal",
+        "type": "tuple"
+      },
+      { "internalType": "string", "name": "_terms", "type": "string" }
+    ],
+    "name": "createDealWithValue",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+    "name": "deals",
+    "outputs": [
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "address", "name": "buyer", "type": "address" },
+      {
+        "internalType": "enum Yubiai.DealState",
+        "name": "state",
+        "type": "uint8"
+      },
+      { "internalType": "uint32", "name": "extraBurnFee", "type": "uint32" },
+      { "internalType": "uint32", "name": "claimCount", "type": "uint32" },
+      { "internalType": "uint24", "name": "freeSpace", "type": "uint24" },
+      { "internalType": "address", "name": "seller", "type": "address" },
+      { "internalType": "uint32", "name": "createdAt", "type": "uint32" },
+      { "internalType": "uint32", "name": "timeForService", "type": "uint32" },
+      { "internalType": "uint32", "name": "timeForClaim", "type": "uint32" },
+      { "internalType": "contract IERC20", "name": "token", "type": "address" },
+      { "internalType": "uint64", "name": "currentClaim", "type": "uint64" },
+      { "internalType": "uint32", "name": "freeSpace2", "type": "uint32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "disputeIdToClaim",
+    "outputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_externalDisputeID",
+        "type": "uint256"
+      }
+    ],
+    "name": "externalIDtoLocalID",
+    "outputs": [
+      { "internalType": "uint256", "name": "localDisputeID", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
+    "name": "extraDatas",
+    "outputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_claimId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_ruling", "type": "uint256" }
+    ],
+    "name": "fundAppeal",
+    "outputs": [
+      { "internalType": "bool", "name": "fullyFunded", "type": "bool" }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMultipliers",
+    "outputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_claimId", "type": "uint256" },
+      {
+        "internalType": "address payable",
+        "name": "_beneficiary",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_contributedTo", "type": "uint256" }
+    ],
+    "name": "getTotalWithdrawableAmount",
+    "outputs": [
+      { "internalType": "uint256", "name": "sum", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "governor",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "_dealId", "type": "uint64" }
+    ],
+    "name": "isOver",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint64", "name": "_dealId", "type": "uint64" },
+      { "internalType": "uint256", "name": "_amount", "type": "uint256" },
+      { "internalType": "string", "name": "_evidence", "type": "string" }
+    ],
+    "name": "makeClaim",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes", "name": "_extraData", "type": "bytes" },
+      { "internalType": "string", "name": "_metaEvidence", "type": "string" }
+    ],
+    "name": "newArbSettings",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "numberOfRulingOptions",
+    "outputs": [
+      { "internalType": "uint256", "name": "count", "type": "uint256" }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_disputeId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_ruling", "type": "uint256" }
+    ],
+    "name": "rule",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "_token",
+        "type": "address"
+      },
+      { "internalType": "bool", "name": "_validity", "type": "bool" }
+    ],
+    "name": "setTokenValidity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "settings",
+    "outputs": [
+      { "internalType": "address", "name": "admin", "type": "address" },
+      { "internalType": "uint32", "name": "maxClaims", "type": "uint32" },
+      { "internalType": "uint32", "name": "timeForReclaim", "type": "uint32" },
+      {
+        "internalType": "uint32",
+        "name": "timeForChallenge",
+        "type": "uint32"
+      },
+      { "internalType": "address", "name": "ubiBurner", "type": "address" },
+      { "internalType": "uint32", "name": "adminFee", "type": "uint32" },
+      { "internalType": "uint32", "name": "ubiFee", "type": "uint32" },
+      { "internalType": "uint32", "name": "maxExtraFee", "type": "uint32" },
+      {
+        "internalType": "uint32",
+        "name": "minTimeForService",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "maxTimeForService",
+        "type": "uint32"
+      },
+      { "internalType": "uint32", "name": "minTimeForClaim", "type": "uint32" },
+      { "internalType": "uint32", "name": "maxTimeForClaim", "type": "uint32" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_claimId", "type": "uint256" },
+      { "internalType": "string", "name": "_evidenceURI", "type": "string" }
+    ],
+    "name": "submitEvidence",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    ],
+    "name": "tokenValidity",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_claimId", "type": "uint256" },
+      {
+        "internalType": "address payable",
+        "name": "_beneficiary",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_round", "type": "uint256" },
+      { "internalType": "uint256", "name": "_ruling", "type": "uint256" }
+    ],
+    "name": "withdrawFeesAndRewards",
+    "outputs": [
+      { "internalType": "uint256", "name": "reward", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_claimId", "type": "uint256" },
+      {
+        "internalType": "address payable",
+        "name": "_beneficiary",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_contributedTo", "type": "uint256" }
+    ],
+    "name": "withdrawFeesAndRewardsForAllRounds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
