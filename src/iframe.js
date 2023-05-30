@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { ethers } from 'ethers'
-import _yubiai from './assets/abis/Yubiai.json'
+import NFTProtectABI from './assets/abis/NFTProtectABI.json'
+import ArbitrableProxyABI from './assets/abis/ArbitrableProxyABI.json'
 import useProvider from './bootstrap/dapp-api'
 import { Card, Result } from 'antd'
 
-const YubiaiLink = () => {
+const RequestLink = () => {
   const [parameters, setParameters] = useState()
   const [errored, setErrored] = useState()
-  const [dealID, setDealID] = useState()
+  const [requestId, setRequestId] = useState()
   const {
     provider: fallbackProvider,
     error: fallbackProviderError
@@ -62,21 +63,42 @@ const YubiaiLink = () => {
     return new ethers.Wallet('0x123123123123123123123132123123', provider)
   }, [fallbackProvider, parameters])
 
-  const yubiaiContract = useMemo(() => {
+  const NftProtectContract = useMemo(() => {
+    if (!parameters) return
+    if (!arbitrableSigner) return
+    const address = '0xf837fB19Ffd6c87700fb98743F29acCa43454299' // hardcode nftprotect address
+
+    try {
+      return new ethers.Contract(
+        address,
+        NFTProtectABI,
+        arbitrableSigner
+      )
+    } catch (err) {
+      console.error(`Error instantiating nftprotect contract`, err)
+      setErrored({
+        title: 'Error loading item. Are you in the correct network?',
+        subTitle: err.message
+      })
+      return null
+    }
+  }, [arbitrableSigner, parameters])
+
+  const ArbitrableProxyContract = useMemo(() => {
     if (!parameters) return
     if (!arbitrableSigner) return
     let { arbitrableContractAddress } = parameters
     if (!arbitrableContractAddress)
-      arbitrableContractAddress = '0xAeECFa44639b61d2e0A9534D918789d94A24a9DE' // hardcode yubiai address
+      arbitrableContractAddress = '0x78ac5F189FC6DAB261437a7B95D11cAcf0234FFe' // hardcode proxy address
 
     try {
       return new ethers.Contract(
         arbitrableContractAddress,
-        _yubiai,
+        ArbitrableProxyABI,
         arbitrableSigner
       )
     } catch (err) {
-      console.error(`Error instantiating yubiai contract`, err)
+      console.error(`Error instantiating arbitrable proxy contract`, err)
       setErrored({
         title: 'Error loading item. Are you in the correct network?',
         subTitle: err.message
@@ -87,7 +109,7 @@ const YubiaiLink = () => {
 
   // Fetch clain and derive deal id.
   useEffect(() => {
-    if (!yubiaiContract || dealID !== undefined || !parameters) return
+    if (!NftProtectContract || !ArbitrableProxyContract || requestId !== undefined || !parameters) return
     const { disputeID, arbitrableChainID } = parameters
     ;(async () => {
       try {
@@ -104,19 +126,19 @@ const YubiaiLink = () => {
         })
       }
       try {
-        const claimID = await yubiaiContract.disputeIdToClaim(disputeID)
-        const claim = await yubiaiContract.claims(claimID)
-        console.log({ claim, claimID, disputeID })
-        setDealID(claim.dealId)
+        const localDisputeId = await ArbitrableProxyContract.externalIDtoLocalID(disputeID)
+        const requestId = await NftProtectContract.disputeToRequest(localDisputeId)
+        console.log('Loaded data:', { disputeID, localDisputeId, requestId })
+        setRequestId(requestId)
       } catch (err) {
         console.error('Error fetching Deal', err)
         setErrored({
-          title: 'Error fetching Yubiai Deal. Are you in the correct network?',
+          title: 'Error fetching NFTProtect request. Are you in the correct network?',
           subTitle: err.message
         })
       }
     })()
-  }, [arbitrableSigner, yubiaiContract, dealID, parameters])
+  }, [arbitrableSigner, NftProtectContract, requestId, parameters])
 
   if (errored)
     return (
@@ -129,27 +151,27 @@ const YubiaiLink = () => {
       </Card>
     )
 
-  if (fallbackProviderError && !yubiaiContract)
+  if (fallbackProviderError && !NftProtectContract)
     return (
       <Card bordered>
         <Result status="warning" title={fallbackProviderError} />
       </Card>
     )
 
-  if (!dealID || !parameters) return <Card loading bordered />
+  if (!requestId || !parameters) return <Card loading bordered />
 
   return (
     <Card bordered>
-      {process.env.REACT_APP_YUBIAI_URL && (
+      {process.env.REACT_APP_NFTPROTECT_URL && (
         <a
-          href={`${process.env.REACT_APP_YUBIAI_URL}/deal/${dealID}`}
+          href={`${process.env.REACT_APP_NFTPROTECT_URL}/request/${requestId}`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          See Yubiai Post
+          Open NFTProtect request page
         </a>
       )}
     </Card>
   )
 }
-export default YubiaiLink
+export default RequestLink

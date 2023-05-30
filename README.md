@@ -1,8 +1,8 @@
 <p align="center">
-  <b style="font-size: 32px;">Yubiai Evidence Display</b>
+  <b style="font-size: 32px;">NFTProtect Evidence Display</b>
 </p>
 
-Evidence Display for Yubiai, according to [EIP-1497 MetaEvidence](https://github.com/ethereum/EIPs/issues/1497).
+Evidence Display for NFTProtect, according to [EIP-1497 MetaEvidence](https://github.com/ethereum/EIPs/issues/1497).
 
 ## Get Started
 

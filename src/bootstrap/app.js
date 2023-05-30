@@ -1,14 +1,14 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import YubiaiLink from '../iframe'
+import RequestLink from '../iframe'
 import './styles.css'
 
 const App = () => (
   <>
     <Helmet>
-      <title>Yubiai Display</title>
+      <title>NFTProtect Display</title>
     </Helmet>
-    <YubiaiLink />
+    <RequestLink />
   </>
 )
 

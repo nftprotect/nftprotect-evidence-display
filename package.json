@@ -8,8 +8,8 @@
   "license": "MIT",
   "homepage": "./",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
     "release": "standard-version",
     "lint:eslint:fix": "eslint './src/**/*.js' --fix",
     "lint:prettier:fix": "prettier --write ''./src/**/*.js''",
