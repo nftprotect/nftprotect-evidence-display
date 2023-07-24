@@ -67,7 +67,7 @@ const RequestLink = () => {
   const NftProtectContract = useMemo(() => {
     if (!parameters) return
     if (!arbitrableSigner) return
-    const address = supportedChains.find(chain => chain.id.toString() === parameters.arbitrableChainID).nftpContractAddress
+    const address = supportedChains.find(chain => chain.id.toString() === parameters.arbitrableChainID)?.nftpContractAddress
     if (!address) {
       console.error(`nftprotect contract not found for chainId ${parameters.arbitrableChainID}`)
       setErrored({
