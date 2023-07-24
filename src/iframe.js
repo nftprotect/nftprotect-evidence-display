@@ -4,6 +4,7 @@ import NFTProtectABI from './assets/abis/NFTProtectABI.json'
 import ArbitrableProxyABI from './assets/abis/ArbitrableProxyABI.json'
 import useProvider from './bootstrap/dapp-api'
 import { Card, Result } from 'antd'
+import { NFTProtectUrl, supportedChains } from './config'
 
 const RequestLink = () => {
   const [parameters, setParameters] = useState()
@@ -66,7 +67,15 @@ const RequestLink = () => {
   const NftProtectContract = useMemo(() => {
     if (!parameters) return
     if (!arbitrableSigner) return
-    const address = '0xf837fB19Ffd6c87700fb98743F29acCa43454299' // hardcode nftprotect address
+    const address = supportedChains.find(chain => chain.id.toString() === parameters.arbitrableChainID)
+    if (!address) {
+      console.error(`nftprotect contract not found for chainId ${parameters.arbitrableChainID}`)
+      setErrored({
+        title: 'Error loading item. Are you in the correct network?',
+        subTitle: `nftprotect contract not found for chainId ${parameters.arbitrableChainID}`
+      })
+      return null
+    }
 
     try {
       return new ethers.Contract(
@@ -88,8 +97,14 @@ const RequestLink = () => {
     if (!parameters) return
     if (!arbitrableSigner) return
     let { arbitrableContractAddress } = parameters
-    if (!arbitrableContractAddress)
-      arbitrableContractAddress = '0x78ac5F189FC6DAB261437a7B95D11cAcf0234FFe' // hardcode proxy address
+    if (!arbitrableContractAddress) {
+      console.error(`No arbitrable contract address provided`)
+      setErrored({
+        title: 'Error loading item. Are you in the correct network?',
+        subTitle: 'No arbitrable contract address provided'
+      })
+      return null
+    }
 
     try {
       return new ethers.Contract(
@@ -162,9 +177,9 @@ const RequestLink = () => {
 
   return (
     <Card bordered>
-      {process.env.REACT_APP_NFTPROTECT_URL && (
+      {NFTProtectUrl && (
         <a
-          href={`${process.env.REACT_APP_NFTPROTECT_URL}/request/${requestId}`}
+          href={`${NFTProtectUrl}/request/${parameters?.arbitrableChainID}/${requestId}`}
           target="_blank"
           rel="noopener noreferrer"
         >
