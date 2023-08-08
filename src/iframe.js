@@ -57,7 +57,7 @@ const RequestLink = () => {
 
     let provider = fallbackProvider
     if (arbitrableJsonRpcUrl) {
-      if (arbitrableJsonRpcUrl.toLowerCase().startsWith('ws:')) {
+      if (arbitrableJsonRpcUrl.toLowerCase().startsWith('wss:')) {
         provider = new ethers.providers.WebSocketProvider(arbitrableJsonRpcUrl)
       } else {
         provider = new ethers.providers.JsonRpcProvider(arbitrableJsonRpcUrl)
