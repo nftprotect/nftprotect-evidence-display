@@ -56,9 +56,13 @@ const RequestLink = () => {
     if (!arbitrableJsonRpcUrl && !fallbackProvider) return
 
     let provider = fallbackProvider
-    if (arbitrableJsonRpcUrl)
-      provider = new ethers.providers.JsonRpcProvider(arbitrableJsonRpcUrl)
-
+    if (arbitrableJsonRpcUrl) {
+      if (arbitrableJsonRpcUrl.toLowerCase().startsWith('ws:')) {
+        provider = new ethers.providers.WebSocketProvider(arbitrableJsonRpcUrl)
+      } else {
+        provider = new ethers.providers.JsonRpcProvider(arbitrableJsonRpcUrl)
+      }
+    }
     // Using a random signer because provider does not have getChainId for
     // whatever reason.
     return new ethers.Wallet('0x123123123123123123123132123123', provider)
