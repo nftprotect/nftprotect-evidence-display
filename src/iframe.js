@@ -52,17 +52,19 @@ const RequestLink = () => {
   const arbitrableSigner = useMemo(() => {
     if (!parameters) return
 
-    const { arbitrableJsonRpcUrl } = parameters
-    if (!arbitrableJsonRpcUrl && !fallbackProvider) return
+    // const { arbitrableJsonRpcUrl } = parameters
+    // if (!arbitrableJsonRpcUrl && !fallbackProvider) return
 
-    let provider = fallbackProvider
-    if (arbitrableJsonRpcUrl) {
-      if (arbitrableJsonRpcUrl.toLowerCase().startsWith('wss:')) {
-        provider = new ethers.providers.WebSocketProvider(arbitrableJsonRpcUrl)
-      } else {
-        provider = new ethers.providers.JsonRpcProvider(arbitrableJsonRpcUrl)
-      }
-    }
+    // let provider = fallbackProvider
+    // if (arbitrableJsonRpcUrl) {
+    //   if (arbitrableJsonRpcUrl.toLowerCase().startsWith('wss:')) {
+    //     provider = new ethers.providers.WebSocketProvider(arbitrableJsonRpcUrl)
+    //   } else {
+    //     provider = new ethers.providers.JsonRpcProvider(arbitrableJsonRpcUrl)
+    //   }
+    // }
+    const rpcUrl = supportedChains.find(chain => chain.id.toString() === parameters.arbitrableChainID.toString())?.nodeUrl
+    const provider = rpcUrl ? new ethers.providers.JsonRpcProvider(rpcUrl) : fallbackProvider
     // Using a random signer because provider does not have getChainId for
     // whatever reason.
     return new ethers.Wallet('0x123123123123123123123132123123', provider)
