@@ -75,6 +75,16 @@ const RequestLink = () => {
     error: fallbackProviderError
   } = useProvider()
 
+  useEffect(() => {
+    // Try to load parent styles
+    Array.prototype.forEach.call(window.parent.document.querySelectorAll("link[rel=stylesheet]"), function(link) {
+      var newLink = document.createElement("link");
+      newLink.rel  = link.rel;
+      newLink.href = link.href;
+      document.head.appendChild(newLink);
+    });
+  }, [])
+
   // Read query parameters.
   useEffect(() => {
     if (window.location.search[0] !== '?' || parameters) return
