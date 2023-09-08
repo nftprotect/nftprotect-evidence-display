@@ -230,7 +230,7 @@ const RequestLink = () => {
 
   if (errored)
     return (
-      <Card bordered>
+      <Card>
         <Result
           status="warning"
           title={errored.title}
@@ -241,15 +241,15 @@ const RequestLink = () => {
 
   if (fallbackProviderError && !NftProtectContract)
     return (
-      <Card bordered>
+      <Card>
         <Result status="warning" title={fallbackProviderError} />
       </Card>
     )
 
-  if (!requestId || !parameters) return <Card loading bordered />
+  if (!requestId || !parameters) return <Card loading />
 
   return (
-    <Card bordered>
+    <>
       <img src='header.svg' width='100%' title='NFT Protect'/>
       { (metaEvidenceType !== undefined) ?
         getContent(requestId, parameters.arbitrableChainID, metaEvidenceType) :
@@ -258,10 +258,10 @@ const RequestLink = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open NFTProtect request page
+          Open NFT Protect request page
         </a>
       }
-    </Card>
+    </>
   )
 }
 export default RequestLink
