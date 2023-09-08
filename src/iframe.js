@@ -226,21 +226,12 @@ const RequestLink = () => {
       </Card>
     )
 
-  if (!requestId || !parameters) return <Card bordered={false}loading />
+  if (!requestId || (metaEvidenceType === undefined) || !parameters) return <Card bordered={false} loading />
 
   return (
-    <Card bordered={false} style={{'box-shadow': 'none'}} bodyStyle={{ padding: 0 }}>
-      <img src='header.svg' width='100%' title='NFT Protect'/>
-      { (metaEvidenceType !== undefined) ?
-        getContent(requestId, parameters.arbitrableChainID, metaEvidenceType) :
-        <a
-          href={ getUrl(requestId, parameters?.arbitrableChainID) }
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Open NFT Protect request page
-        </a>
-      }
+    <Card bordered={false} style={{boxShadow: 'none'}} bodyStyle={{ padding: 0 }}>
+      <img src='header.svg' width='100%' title='NFT Protect' alt='NFT Protect'/>
+      { getContent(requestId, parameters.arbitrableChainID, metaEvidenceType) }
     </Card>
   )
 }
