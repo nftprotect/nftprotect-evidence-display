@@ -16,28 +16,28 @@ const getContent = (requestId, chainId, metaEvidenceType) => {
     <div>
       <p>A dispute concerning a pNFT (protected copy of the original NFT) has arisen!</p>
       <p><b>The Claimant</b> alleges they acquired the pNFT through a bona fide transaction. However, the Original Owner refuses to hand over the original NFT to them.</p>
-      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)}>evidence page</a></b>.</p>
+      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)} target='_blank' rel="noopener">evidence page</a></b>.</p>
       <p><b>The Defendant</b> is identified as the Original Owner of the NFT.</p>
       <p>The Jury Duty is to examine the evidence page and, based on the Policy, determine whether the pNFT transfer was genuinely bona fide. If proven so, the pNFT will be burned, and the original NFT will be handed over to the Claimant (New Owner). If not, the pNFT remains with the Claimant, but the Defendant (Original Owner) can initiate a new case.</p>
     </div>, // used in askOwnershipAdjustmentArbitrate() - basic
     <div>
       <p>A dispute concerning a pNFT (protected copy of the original NFT) has arisen!</p>
       <p><b>The Claimant</b> alleges they mistakenly sent their pNFT to an incorrect address.</p>
-      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)}>evidence page</a></b>.</p>
+      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)} target='_blank' rel="noopener">evidence page</a></b>.</p>
       <p><b>The Defendant</b> is identified as the party that either rightfully or wrongfully received the pNFT.</p>
       <p>The Jury Duty is to examine the evidence page and, based on the Policy, determine if the pNFT was wrongly sent, resulting in an ownership change. If this is proven true, the pNFT will be burned, and the original will return to the Original Owner. If not, the pNFT will remain with the Defendant.</p>
     </div>, // used in askOwnershipRestoreArbitrate() for sending to incorrect address- basic
     <div>
       <p>A dispute concerning a pNFT (protected copy of the original NFT) has arisen!</p>
       <p><b>The Claimant</b> alleges they lost their pNFT to a phishing attack.</p>
-      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)}>evidence page</a></b>.</p>
+      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)} target='_blank' rel="noopener">evidence page</a></b>.</p>
       <p><b>The Defendant</b> is identified as the party that either lawfully or unlawfully acquired the pNFT.</p>
       <p>The Jury Duty is to examine the evidence page and, based on the Policy, determine if a phishing attack led to the change in pNFT ownership. If the attack is verified, the pNFT will be burned, and the original will return to the Original Owner. If not, the pNFT will remain with the Defendant.</p>
     </div>, // used in askOwnershipRestoreArbitrate() for phishing atack - basic
     <div>
       <p>A dispute concerning a pNFT (protected copy of the original NFT) has arisen!</p>
       <p><b>The Claimant</b> alleges they lost their pNFT to a protocol breach.</p>
-      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)}>evidence page</a></b>.</p>
+      <p>NFT Protect offers the detailed <b><a href={getUrl(requestId, chainId)} target='_blank' rel="noopener">evidence page</a></b>.</p>
       <p><b>The Respondent</b> is identified as the protocol itself, which might be responsible for the alleged breach.</p>
       <p>The Jury Duty is to examine the evidence page and, based on the Policy, determine if a protocol breach occurred. If this breach is verified, the pNFT will be burned, and the original will return to the Original Owner. Otherwise, the pNFT will remain with the Respondent.</p>
     </div>,  // used in askOwnershipRestoreArbitrate() for protocol breach - basic
