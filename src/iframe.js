@@ -6,10 +6,70 @@ import useProvider from './bootstrap/dapp-api'
 import { Card, Result } from 'antd'
 import { NFTProtectUrl, supportedChains } from './config'
 
+const getUrl = (requestId, chainId) => `${NFTProtectUrl}/request/${chainId}/${requestId}`
+
+const getContent = (requestId, chainId, metaEvidenceType) => {
+  const contents = [
+    <></>, // used in burn() - ultra
+    <></>, // used in adjustOwnership() - ultra
+    <></>, // used in answerOwnershipAdjustment() - ultra
+    <div>
+      <h3>Ownership adjustment in case of bona fide transfer</h3>
+      <div>
+        <p>A dispute over a pNFT (protected copy of the original NFT) has arisen!</p>
+        <p><b>The Claimant</b> asserts that they transferred their pNFT to another individual under a bona fide agreement. However, now they have reservations about this transaction.</p>
+        <p>NFT Protect has prepared a <a href={getUrl(requestId, chainId)}>case page</a> aiming to provide comprehensive information.</p>
+        <p><b>The Defendant</b>  is the party that potentially acquired the pNFT as part of a sale. It is incumbent upon the Defendant to substantiate that the acquisition was made in good faith.</p>
+        <p>You are tasked to review the evidence and determine, based on the Policy, if the pNFT transfer was genuinely made in good faith.</p>
+        <p>If the transfer is established as bona fide, the pNFT will stay with the Defendant.</p>
+        <p>If the transfer is deemed not bona fide, NFT Protect will burn the pNFT, and the original will be reverted to the Original Owner.</p>
+      </div>
+    </div>, // used in askOwnershipAdjustmentArbitrate() - basic
+    <div>
+      <h3>Ownership restoration in case of loss of pNFT due to a sending to an incorrect address</h3>
+      <div>
+        <p>A dispute over a pNFT (protected copy of the original NFT) has arisen!</p>
+        <p><b>The Claimant</b> contends that their pNFT was sent to an incorrect address. They are the party that inadvertently dispatched the pNFT but maintained control over the original NFT (Original Owner).</p>
+        <p>NFT Protect has prepared a <a href={getUrl(requestId, chainId)}>case page</a> aiming to provide comprehensive information.</p>
+        <p><b>The Defendant</b> might be the party that either rightfully or wrongfully took possession of the pNFT.</p>
+        <p>You are tasked to review the evidence and determine, based on the Policy, whether the pNFT was mistakenly sent to an incorrect address, causing a change in pNFT ownership.</p>
+        <p>If it is confirmed that the pNFT was indeed sent to an incorrect address, NFT Protect will burn the pNFT, and the original will be reverted to the Original Owner.</p>
+        <p>If there was no mistake in sending, the pNFT will remain with the Defendant.</p>
+      </div>
+    </div>, // used in askOwnershipRestoreArbitrate() - basic
+    <div>
+      <h3>Ownership restoration in case of loss of pNFT in phishing attack</h3>
+      <div>
+        <p>A dispute over a pNFT (protected copy of the original NFT) has arisen!</p>
+        <p><b>The Claimant</b> alleges the loss of their pNFT due to a phishing attack. They retained control over the original NFT (Original Owner) but lost the pNFT.</p>
+        <p>NFT Protect has prepared a <a href={getUrl(requestId, chainId)}>case page</a> aiming to provide comprehensive information.</p>
+        <p><b>The Defendant</b> is identified as the party that either lawfully or unlawfully acquired the pNFT.</p>
+        <p>You are tasked to review the evidence and determine, based on the Policy, whether a phishing attack occurred, leading to the change in pNFT ownership.</p>
+        <p>If the phishing attack is confirmed, NFT Protect will burn the pNFT, and the original will be returned to the Original Owner.</p>
+        <p>If no phishing attack occurred, the pNFT will remain with the Defendant.</p>
+      </div>
+    </div>, // used in askOwnershipRestoreArbitrate() - basic
+    <div>
+      <h3>Ownership restoration in case of loss of pNFT in a protocol breach</h3>
+      <div>
+        <p>A dispute over a pNFT (protected copy of the original NFT) has arisen.</p>
+        <p><b>The Claimant</b> alleges a breach in the protocol, leading to the loss of their pNFT. </p>
+        <p><b>The Respondent</b> in this scenario is the protocol itself.</p>
+        <p>NFT Protect has prepared a <a href={getUrl(requestId, chainId)}>case page</a> aiming to provide comprehensive information.</p>
+        <p>You are tasked to review the evidence and determine, based on the Policy, if a protocol breach indeed occurred.</p>
+        <p>If the breach is confirmed, NFT Protect will burn the pNFT, and the original will be returned to the Original Owner.</p>
+        <p>If no breach took place, the pNFT will remain with the Respondent.</p>
+      </div>
+    </div>,  // used in askOwnershipRestoreArbitrate() - basic
+  ]
+  return contents[metaEvidenceType]
+}
+
 const RequestLink = () => {
   const [parameters, setParameters] = useState()
   const [errored, setErrored] = useState()
   const [requestId, setRequestId] = useState()
+  const [metaEvidenceType, setMetaEvidenceType] = useState()
   const {
     provider: fallbackProvider,
     error: fallbackProviderError
@@ -149,8 +209,15 @@ const RequestLink = () => {
       try {
         const localDisputeId = await ArbitrableProxyContract.externalIDtoLocalID(disputeID)
         const requestId = await NftProtectContract.disputeToRequest(localDisputeId)
-        console.log('Loaded data:', { disputeID, localDisputeId, requestId })
         setRequestId(requestId)
+        let requestData
+        try {
+          requestData = await NftProtectContract.requests(requestId)
+          setMetaEvidenceType(requestData.metaevidence)
+        } catch (err) {
+          console.error('Error loading request data', err)
+        }
+        console.log('Loaded data:', { disputeID, localDisputeId, requestId, requestData })
       } catch (err) {
         console.error('Error fetching Deal', err)
         setErrored({
@@ -183,15 +250,17 @@ const RequestLink = () => {
 
   return (
     <Card bordered>
-      {NFTProtectUrl && (
+      <img src='header.svg' width='100%' title='NFT Protect'/>
+      { (metaEvidenceType !== undefined) ?
+        getContent(requestId, parameters.arbitrableChainID, metaEvidenceType) :
         <a
-          href={`${NFTProtectUrl}/request/${parameters?.arbitrableChainID}/${requestId}`}
+          href={ getUrl(requestId, parameters?.arbitrableChainID) }
           target="_blank"
           rel="noopener noreferrer"
         >
           Open NFTProtect request page
         </a>
-      )}
+      }
     </Card>
   )
 }
