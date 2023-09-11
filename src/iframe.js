@@ -230,8 +230,8 @@ const RequestLink = () => {
 
   return (
     <Card bordered={false} style={{boxShadow: 'none'}} bodyStyle={{ padding: 0 }}>
-      <img src='header.svg' width='100%' title='NFT Protect' alt='NFT Protect'/>
       { getContent(requestId, parameters.arbitrableChainID, metaEvidenceType) }
+      <img src='header.svg' width='100%' title='NFT Protect' alt='NFT Protect'/>
     </Card>
   )
 }
