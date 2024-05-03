@@ -188,7 +188,8 @@ const RequestLink = () => {
       }
       try {
         const localDisputeId = await ArbitrableProxyContract.externalIDtoLocalID(disputeID)
-        const requestId = await NftProtectContract.disputeToRequest(localDisputeId)
+        const disputeKeyHash = ethers.utils.solidityKeccak256(["uint256", "uint256"], [1, localDisputeId]);
+        const requestId = await NftProtectContract.disputeToRequest(disputeKeyHash)
         setRequestId(requestId)
         let requestData
         try {
